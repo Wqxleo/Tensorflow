@@ -1,8 +1,8 @@
 # 总结：
 # 训练神经网络的过程可以分为以下三个步骤：
-# 1、定义神经网络的结构和向前传播的输出结果
+# 1、定义神经网络的结构和前向传播的输出结果
 # 2、定义损失函数以及选择反向传播优化的算法
-# 3、生成回话（tf.Session）并且在训练数据上反复运行反向传播优化算法
+# 3、生成会话（tf.Session）并且在训练数据上反复运行反向传播优化算法
 
 
 
@@ -29,7 +29,13 @@ y = tf.matmul(a, w2)
 
 #定义损失函数和反向传播算法。
 cross_entropy = -tf.reduce_mean(y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)))
-train_step = tf.train.AdadeltaOptimizer(0.001).minimize(cross_entropy)
+
+train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
+#Tensorflow经过使用Adam优化算法对损失函数中变量进行修改值
+#默认修改tf.Variable类型的参数。
+#也可以使用var_list参数来定义更新哪些参数
+# 如：train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy，var_list=[w1, w2])
+
 
 #通过随机数生成一个模拟数据集
 rdm = RandomState(1)
@@ -55,12 +61,12 @@ with tf.Session() as sess:
         start = (i*batch_size) % dataset_size
         end = min(start+batch_size, dataset_size)
         #通过选取的样本训练神经网络并更新参数
+
         sess.run(train_step, feed_dict={x: X[start:end], y_: Y[start:end]})
         if i % 1000 == 0:
             #每隔一段时间计算在所有数据上的交叉熵并输出。
             total_cross_entropy = sess.run(
-                cross_entropy, feed_dict={x: X, y_:Y})
+                cross_entropy, feed_dict={x: X, y_: Y})
             print("After %d training step(s), cross entropy on all data is %g"%(i, total_cross_entropy))
     print(sess.run(w1))
     print(sess.run(w2))
-    ##
