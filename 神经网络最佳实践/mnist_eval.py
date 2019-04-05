@@ -13,7 +13,8 @@ def evaluate(mnist):
     with tf.Graph().as_default() as g:
         #定义输入输出格式
         x = tf.placeholder(tf.float32, [None, mn_inference.INPUT_NODE], name='x-input')
-        y_= tf.placeholder(tf.float32, [None, mn_inference.OUTPUT_NODE], name='y-input')
+        y_ = tf.placeholder(tf.float32, [None, mn_inference.OUTPUT_NODE], name='y-input')
+        #x是训练图片，y_是对应的标签
         validate_feed = {x: mnist.validation.images, y_: mnist.validation.labels}
 
         #直接通过调用封装好的函数来计算前向传播的结果。因为测试时不关注正则化损失的值，
@@ -21,8 +22,11 @@ def evaluate(mnist):
         y = mn_inference.inference(x, None)
 
         #使用前向传播的结果计算正确率。如果需要对位置的样例进行分类，那么使用
-        #tfargmax(y, 1)就可以得到输入样例的预测类别了。
+        #tf.argmax(y, 1)就可以得到输入样例的预测类别了。
+        #tf.argmax(y, 1)返回最大值的索引号，在这里y和y_都是藏长度为10的向量
         correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+
+        #准确率  tf.cast类型转换  tf.reduce_mean求均值
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
         #通过变量重命名的方式来加载模型， 这样在前向传播的过程中就不需要调用求滑动平均

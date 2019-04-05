@@ -9,6 +9,8 @@ with sess.as_default():
     #自动初始化所有变量
     init_op = tf.initialize_all_variables()
     sess.run(init_op)
+    print('w1:',w1.eval())
+    print('w2:',w2.eval())
     # sess.run(w1.initializer) #初始化w1
     # sess.run(w2.initializer)#初始化w2
     print(sess.run(y))

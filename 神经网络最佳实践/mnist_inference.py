@@ -32,6 +32,8 @@ def inference(input_tensor, regularizer):
         #这里通过tf.get_variable或tf.Variable没有本质区别，因为在训练或是测试中
         # 没有在同一个程序中多次调用这个函数。如果在同一个程序中多次调用，需要在
         #第一次调用之后将reuse的参数设置为True
+
+        #根据神经网络的结构，第一层的参数为[INPUT_NODE, LAYER1_NODE]的矩阵
         weights = get_weight_variable(
             [INPUT_NODE, LAYER1_NODE], regularizer )
 
@@ -44,6 +46,6 @@ def inference(input_tensor, regularizer):
             [LAYER1_NODE, OUTPUT_NODE], regularizer)
         biases = tf.get_variable(
             "biases", [OUTPUT_NODE], initializer=tf.constant_initializer(0.0))
-        layer2 = tf.matmul(layer1, weights) +biases
+        layer2 = tf.matmul(layer1, weights) + biases
     #返回最后的前向传播结果
     return layer2

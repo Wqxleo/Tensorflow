@@ -24,6 +24,7 @@ def train(mnist):
         tf.float32, [None, mnistinfer.INPUT_NODE], name='x-inpyt')
     y_ = tf.placeholder(
         tf.float32, [None, mnistinfer.OUTPUT_NODE], name='y-input')
+    #正则化损失函数L2
     regularizer = tf.contrib.layers.l2_regularizer(REGULARATION_RATE)
     # 直接使用mnist_inferense.py中定义的前向传播过程
     y = mnistinfer.inference(x, regularizer)
